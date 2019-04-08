@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="container">
+    <!--Breadcrumb-->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            {% if current_dir.path == '.' %}
+                <li class="breadcrumb-item active" aria-current="page">home</li>
+            {% else %}
+                <li class="breadcrumb-item"><a href="{{ url_for('index') }}">home</a></li>
+                {% for item in current_dir.path_list[:-1] %}
+                    <li class="breadcrumb-item"><a href="{{ url_for('index', path='/'.join(current_dir.path_list[:loop.index])) }}">{{ item }}</a></li>
+                {% endfor %}
+                <li class="breadcrumb-item active" aria-current="page">{{ current_dir.path_list[-1] }}</li>
+            {% endif %}
+        </ol>
+    </nav>
+    <!--Explorer-->
+    <table class="table table-hover" style="font-size: 0.8rem">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th style="text-align: right">Size</th>
+                <th style="text-align: right">Last modified</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!--Folders-->
+            {% for dir in current_dir.list_dirs() %}
+                <tr style="line-height: 0.4rem">
+                    <td><a href="{{ url_for('index', path=dir.path|as_uri) }}">{{ dir.name }}</a></td>
+                    <td style="text-align: right"></td>
+                    <td style="text-align: right">{{ dir.stat().st_mtime|as_date }}</td>
+                </tr>
+            {% endfor %}
+            <!--Files-->
+            {% for file in current_dir.list_files() %}
+                <tr style="line-height: 0.4rem">
+                    <td><a href="{{ url_for('plot', path=file.path|as_uri) }}">{{ file.name }}</a></td>
+                    <td style="text-align: right">{{ file.stat().st_size }}</td>
+                    <td style="text-align: right">{{ file.stat().st_mtime|as_date }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% endblock body %}
