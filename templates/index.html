@@ -38,7 +38,7 @@
             {% for file in current_dir.list_files() %}
                 <tr style="line-height: 0.4rem">
                     <td><a href="{{ url_for('plot', path=file.path|as_uri) }}">{{ file.name }}</a></td>
-                    <td style="text-align: right">{{ file.stat().st_size }}</td>
+                    <td style="text-align: right">{{ file.stat().st_size|filesizeformat }}</td>
                     <td style="text-align: right">{{ file.stat().st_mtime|as_date }}</td>
                 </tr>
             {% endfor %}
